@@ -1,0 +1,37 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongodb:
+    image : mongo
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+    - 27717:27017
+    restart: unless-stopped
+    volumes:
+      - /c/Users/tilak/Desktop/GitProjects/mongodb_with_docker/mongo_volume:/data/db
+    networks:
+      - mongo
+  
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8086:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_OPTIONS_EDITORTHEME: ambiance
+      ME_CONFIG_MONGODB_PORT: 27717
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+    depends_on:
+      - mongodb
+    networks:
+      - mongo
+networks:
+  mongo:
+    driver: bridge
